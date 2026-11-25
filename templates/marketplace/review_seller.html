@@ -1,0 +1,124 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Review Seller - CampusSwap</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=8">
+
+    <style>
+        .review-page {
+            max-width: 600px;
+            margin: 60px auto;
+            padding: 30px;
+            background: rgba(22, 22, 45, 0.95);
+            border: 1px solid rgba(160, 120, 255, 0.3);
+            border-radius: 15px;
+        }
+
+        .review-page h1 {
+            margin-bottom: 15px;
+        }
+
+        .review-page form p {
+            margin: 20px 0;
+        }
+
+        .review-page input,
+        .review-page select,
+        .review-page textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border: 1px solid rgba(160, 120, 255, 0.4);
+            border-radius: 8px;
+            background: #17172c;
+            color: white;
+            box-sizing: border-box;
+        }
+
+        .review-submit-btn {
+            padding: 12px 22px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .review-cancel {
+            display: inline-block;
+            margin-left: 12px;
+            color: #c6a5ff;
+            text-decoration: none;
+        }
+
+        .errorlist {
+            color: #ff7777;
+        }
+    </style>
+</head>
+
+<body>
+
+    {% include 'marketplace/includes/messages.html' %}
+
+    <nav class="navbar">
+        <h2>Campus<span>Swap</span></h2>
+
+        <div class="nav-links">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'dashboard' %}">My Dashboard</a>
+        </div>
+    </nav>
+
+
+    <div class="review-page">
+
+        <h1>⭐ Rate Your Seller</h1>
+
+        <p>
+            You are reviewing
+            <strong>{{ exchange.product.seller.username }}</strong>
+            for the product
+            <strong>{{ exchange.product.name }}</strong>.
+        </p>
+
+        <p>Your feedback helps other students make better decisions on CampusSwap.</p>
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <button type="submit" class="review-submit-btn">
+                Submit Review
+            </button>
+
+            <a href="{% url 'product_detail' exchange.product.id %}"
+               class="review-cancel">
+                Cancel
+            </a>
+
+        </form>
+
+    </div>
+
+
+    <footer>
+        <h3>Campus Swap</h3>
+        <p>Connecting Students, Sharing Resources.</p>
+        <p>© 2026 Campus Swap. All Rights Reserved.</p>
+    </footer>
+
+</body>
+</html>

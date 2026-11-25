@@ -1,0 +1,117 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Add Product - Campus Swap</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=6">
+</head>
+
+<body>
+
+    {% include 'marketplace/includes/messages.html' %}
+
+    <div class="upload-container">
+
+        <div class="upload-header">
+            <h1>Sell Your Product</h1>
+            <p>Share your unused items with fellow students!</p>
+        </div>
+
+        <!-- Image Preview -->
+        <div class="image-preview-box">
+
+            <img id="imagePreview"
+                 src=""
+                 alt="Product Preview"
+                 style="display: none;">
+
+            <div id="previewPlaceholder">
+                <span class="preview-icon">📷</span>
+                <p>Your product image preview will appear here</p>
+            </div>
+
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <button type="submit" class="upload-submit-btn">
+                Upload Product
+            </button>
+
+        </form>
+
+        <a href="{% url 'home' %}" class="upload-back-link">
+            ← Back to Home
+        </a>
+
+    </div>
+
+
+    <!-- Image Preview JavaScript -->
+    <script>
+
+        const imageInput = document.querySelector('input[type="file"]');
+
+        const imagePreview = document.getElementById('imagePreview');
+
+        const placeholder = document.getElementById('previewPlaceholder');
+
+        let currentImageURL = null;
+
+        if (imageInput) {
+
+            imageInput.setAttribute('accept', 'image/*');
+
+            imageInput.addEventListener('change', function(event) {
+
+                const file = event.target.files[0];
+
+                if (file) {
+
+                    if (!file.type.startsWith('image/')) {
+                        alert('Please select a valid image file.');
+                        imageInput.value = '';
+                        imagePreview.style.display = 'none';
+                        placeholder.style.display = 'block';
+                        return;
+                    }
+
+                    if (currentImageURL) {
+                        URL.revokeObjectURL(currentImageURL);
+                    }
+
+                    currentImageURL = URL.createObjectURL(file);
+
+                    imagePreview.src = currentImageURL;
+
+                    imagePreview.style.display = 'block';
+
+                    placeholder.style.display = 'none';
+
+                } else {
+
+                    imagePreview.style.display = 'none';
+
+                    placeholder.style.display = 'block';
+
+                }
+
+            });
+
+        }
+
+    </script>
+
+</body>
+</html>

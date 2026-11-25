@@ -1,0 +1,37 @@
+
+{% if messages %}
+<div class="toast-container">
+
+    {% for message in messages %}
+
+    <div class="toast-message {{ message.tags }}">
+
+        <span>{{ message }}</span>
+
+        <button type="button"
+                class="toast-close"
+                onclick="this.parentElement.remove()">
+            &times;
+        </button>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+{% endif %}
+
+<script>
+    document.querySelectorAll('.toast-message').forEach(function(toast) {
+
+        setTimeout(function() {
+            toast.classList.add('hide');
+
+            setTimeout(function() {
+                toast.remove();
+            }, 400);
+
+        }, 3000);
+
+    });
+</script>

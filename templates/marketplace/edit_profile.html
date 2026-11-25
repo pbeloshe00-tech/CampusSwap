@@ -1,0 +1,47 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - Campus Swap</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    {% include 'marketplace/includes/messages.html' %}
+
+<nav class="navbar">
+    <h2>Campus<span>Swap</span></h2>
+
+    <div class="nav-links">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+    </div>
+</nav>
+
+<div class="auth-container">
+
+    <h1>Edit Your Profile</h1>
+    <p>Update your account information</p>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">Save Changes</button>
+    </form>
+
+    <br>
+
+    <a href="{% url 'dashboard' %}" class="back-btn">
+        Back to Dashboard
+    </a>
+
+</div>
+
+</body>
+</html>

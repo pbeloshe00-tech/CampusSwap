@@ -1,0 +1,947 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Dashboard - CampusSwap</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=17">
+
+    <style>
+        body.dashboard-page {
+            background: linear-gradient(135deg, #f7f6ff, #eeecff);
+            color: #25234b;
+        }
+
+        /* NAVIGATION */
+        .dashboard-page .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: linear-gradient(110deg, #24245c, #5148a8);
+            box-shadow: 0 6px 25px rgba(36, 36, 92, 0.2);
+            padding: 18px 5%;
+        }
+
+        .dashboard-page .navbar h2 {
+            color: white;
+            font-size: 32px;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+
+        .dashboard-page .navbar h2 span {
+            color: #c9c2ff;
+        }
+
+        .dashboard-page .nav-links {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 18px;
+        }
+
+        .dashboard-page .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .dashboard-page .nav-links a:hover {
+            color: #c9c2ff;
+        }
+
+        .dashboard-page .nav-links a[href*="wishlist"] {
+            color: #ffb6c8;
+            font-weight: 800;
+        }
+
+        .dashboard-page .nav-links a[href*="wishlist"]:hover {
+            color: #ffffff;
+        }
+
+        .dashboard-page .nav-links form {
+            margin: 0;
+        }
+
+        .dashboard-page .nav-links button {
+            background: rgba(255,255,255,0.14);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 9px 18px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .dashboard-page .nav-links button:hover {
+            background: #7865e8;
+            transform: translateY(-2px);
+        }
+
+        /* MAIN DASHBOARD */
+        .dashboard-page .dashboard-container {
+            max-width: 1250px;
+            width: 92%;
+            margin: 40px auto;
+        }
+
+        .dashboard-page .dashboard-hero {
+            position: relative;
+            overflow: hidden;
+            padding: 45px;
+            margin-bottom: 30px;
+            border-radius: 22px;
+            background: linear-gradient(120deg, #24245c, #5148a8, #7865e8);
+            color: white;
+            box-shadow: 0 12px 35px rgba(81,72,168,0.22);
+        }
+
+        .dashboard-page .dashboard-hero::after {
+            content: "";
+            position: absolute;
+            width: 230px;
+            height: 230px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            right: -50px;
+            top: -90px;
+        }
+
+        .dashboard-page .dashboard-hero h1 {
+            font-size: 34px;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .dashboard-page .dashboard-hero p {
+            color: #e5e1ff;
+            margin-bottom: 24px;
+        }
+
+        .dashboard-page .dashboard-quick-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .dashboard-page .dashboard-quick-links a {
+            display: inline-block;
+            text-decoration: none;
+            background: rgba(255,255,255,0.14);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 11px 18px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .dashboard-page .dashboard-quick-links a:hover {
+            background: white;
+            color: #5148a8;
+            transform: translateY(-3px);
+        }
+
+        /* DASHBOARD SECTIONS */
+        .dashboard-page .dashboard-section,
+        .dashboard-page .exchange-dashboard-section {
+            background: white;
+            padding: 28px;
+            margin: 28px 0;
+            border-radius: 18px;
+            border: 1px solid #e9e5ff;
+            box-shadow: 0 7px 25px rgba(55, 45, 120, 0.07);
+        }
+
+        .dashboard-page .dashboard-section h2,
+        .dashboard-page .exchange-dashboard-section h2,
+        .dashboard-page .products-heading {
+            color: #302b70;
+            font-size: 23px;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-page .section-description {
+            color: #77738f;
+            margin-bottom: 20px;
+        }
+
+        /* NOTIFICATIONS */
+        .dashboard-page .notification-count {
+            display: inline-block;
+            background: #eeeaff;
+            color: #604bd1;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+
+        .dashboard-page .notification-card {
+            position: relative;
+            padding: 18px;
+            margin: 14px 0;
+            border-radius: 12px;
+            background: #f8f7ff;
+            border: 1px solid #e9e5ff;
+        }
+
+        .dashboard-page .unread-notification {
+            border-left: 4px solid #7865e8;
+            background: #f3f0ff;
+        }
+
+        .dashboard-page .notification-card p {
+            margin-bottom: 8px;
+        }
+
+        .dashboard-page .notification-card small {
+            color: #85819b;
+        }
+
+        .dashboard-page .notification-new {
+            display: inline-block;
+            color: #604bd1;
+            background: #e8e2ff;
+            border-radius: 20px;
+            padding: 4px 10px;
+            font-size: 12px;
+            margin: 8px 0;
+        }
+
+        .dashboard-page .notification-read {
+            display: inline-block;
+            color: #16835d;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .dashboard-page .mark-read-btn {
+            margin-top: 10px;
+            border: none;
+            background: #5148a8;
+            color: white;
+            padding: 8px 13px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* EXCHANGE REQUESTS */
+        .dashboard-page .exchange-request-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .dashboard-page .exchange-request-card {
+            background: #faf9ff;
+            border: 1px solid #e8e4ff;
+            border-radius: 15px;
+            padding: 22px;
+            transition: 0.3s;
+        }
+
+        .dashboard-page .exchange-request-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(81,72,168,0.12);
+        }
+
+        .dashboard-page .exchange-request-card h3 {
+            color: #393477;
+            margin-bottom: 14px;
+        }
+
+        .dashboard-page .exchange-request-card p {
+            color: #68647f;
+            margin: 9px 0;
+            overflow-wrap: anywhere;
+        }
+
+        .dashboard-page .exchange-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .dashboard-page .accepted-status {
+            color: #16835d;
+            background: #e2f8ee;
+        }
+
+        .dashboard-page .rejected-status {
+            color: #c43c52;
+            background: #ffe8ec;
+        }
+
+        .dashboard-page .pending-status {
+            color: #a16b0b;
+            background: #fff3d9;
+        }
+
+        /* BUTTONS */
+        .dashboard-page .details-btn,
+        .dashboard-page .delete-btn {
+            display: inline-block;
+            text-decoration: none;
+            padding: 9px 13px;
+            border-radius: 8px;
+            margin: 8px 5px 0 0;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .dashboard-page .details-btn {
+            background: #5148a8;
+            color: white;
+        }
+
+        .dashboard-page .details-btn:hover {
+            background: #7865e8;
+            transform: translateY(-2px);
+        }
+
+        .dashboard-page .delete-btn {
+            background: #ffe8ec;
+            color: #c43c52;
+        }
+
+        .dashboard-page .delete-btn:hover {
+            background: #c43c52;
+            color: white;
+        }
+
+        .dashboard-page .exchange-action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .dashboard-page .exchange-action-buttons form {
+            margin: 0;
+        }
+
+        .dashboard-page .accept-btn,
+        .dashboard-page .reject-btn {
+            border: none;
+            padding: 10px 17px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .dashboard-page .accept-btn {
+            background: #16835d;
+        }
+
+        .dashboard-page .reject-btn {
+            background: #d94b60;
+        }
+
+        .dashboard-page .accept-btn:hover,
+        .dashboard-page .reject-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.08);
+        }
+
+        /* MY PRODUCTS */
+        .dashboard-page .products-section {
+            background: white;
+            padding: 28px;
+            margin: 28px 0;
+            border-radius: 18px;
+            border: 1px solid #e9e5ff;
+            box-shadow: 0 7px 25px rgba(55,45,120,0.07);
+        }
+
+        .dashboard-page .product-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 22px;
+            margin-top: 22px;
+        }
+
+        .dashboard-page .product-card {
+            background: #faf9ff;
+            border: 1px solid #e9e5ff;
+            border-radius: 16px;
+            padding: 16px;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .dashboard-page .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px rgba(81,72,168,0.13);
+        }
+
+        .dashboard-page .product-img {
+            width: 100%;
+            height: 190px;
+            object-fit: cover;
+            border-radius: 11px;
+            margin-bottom: 14px;
+        }
+
+        .dashboard-page .product-card h3 {
+            color: #302b70;
+            margin-bottom: 7px;
+        }
+
+        .dashboard-page .product-card p {
+            color: #77738f;
+            margin: 7px 0;
+        }
+
+        .dashboard-page .product-card h4 {
+            color: #5148a8;
+            font-size: 19px;
+            margin: 10px 0;
+        }
+
+        .dashboard-page .product-status-box {
+            background: #f0eeff;
+            padding: 13px;
+            border-radius: 10px;
+            margin: 14px 0;
+        }
+
+        .dashboard-page .status-label {
+            font-weight: 600;
+            color: #393477 !important;
+        }
+
+        .dashboard-page .available-status {
+            color: #16835d;
+            font-weight: 700;
+        }
+
+        .dashboard-page .sold-status {
+            color: #c43c52;
+            font-weight: 700;
+        }
+
+        .dashboard-page .status-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .dashboard-page .status-select {
+            padding: 9px;
+            border: 1px solid #dcd6ff;
+            border-radius: 8px;
+            background: white;
+            color: #393477;
+        }
+
+        .dashboard-page .status-update-btn {
+            background: #5148a8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 9px 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .dashboard-page .status-update-btn:hover {
+            background: #7865e8;
+        }
+
+        .dashboard-page .dashboard-product-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 12px;
+        }
+
+        /* FOOTER */
+        .dashboard-page footer {
+            background: #24245c;
+            color: white;
+            text-align: center;
+            padding: 30px 15px;
+            margin-top: 50px;
+        }
+
+        .dashboard-page footer h3 {
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .dashboard-page footer p {
+            color: #d8d4ff;
+            margin: 6px 0;
+        }
+
+        /* MOBILE RESPONSIVENESS */
+        @media (max-width: 700px) {
+            .dashboard-page .navbar {
+                position: relative;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .dashboard-page .nav-links {
+                justify-content: center;
+                gap: 12px;
+            }
+
+            .dashboard-page .dashboard-hero {
+                padding: 30px 22px;
+            }
+
+            .dashboard-page .dashboard-hero h1 {
+                font-size: 26px;
+            }
+
+            .dashboard-page .dashboard-section,
+            .dashboard-page .exchange-dashboard-section,
+            .dashboard-page .products-section {
+                padding: 20px 15px;
+            }
+
+            .dashboard-page .product-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body class="dashboard-page">
+
+    {% include 'marketplace/includes/messages.html' %}
+
+    <!-- NAVIGATION -->
+    <nav class="navbar">
+
+        <h2>Campus<span>Swap</span></h2>
+
+        <div class="nav-links">
+
+            <a href="{% url 'home' %}">Home</a>
+
+            <a href="{% url 'chat_list' %}">💬 My Chats</a>
+
+            <a href="{% url 'my_wishlist' %}">❤️ Wishlist</a>
+
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+
+        </div>
+
+    </nav>
+
+    <main class="dashboard-container">
+
+        <!-- WELCOME SECTION -->
+        <section class="dashboard-hero">
+
+            <h1>Welcome, {{ request.user.username }}! 👋</h1>
+
+            <p>Your CampusSwap dashboard. Manage your products, chats and exchange requests in one place.</p>
+
+            <div class="dashboard-quick-links">
+
+                <a href="{% url 'edit_profile' %}">✏️ Edit Profile</a>
+
+                <a href="{% url 'change_password' %}">🔒 Change Password</a>
+
+                <a href="{% url 'chat_list' %}">💬 Open My Chats</a>
+
+                <a href="{% url 'my_wishlist' %}">❤️ My Wishlist</a>
+
+                <a href="{% url 'add_product' %}">＋ Sell a Product</a>
+
+            </div>
+
+        </section>
+
+        <!-- NOTIFICATIONS -->
+        <section class="dashboard-section">
+
+            <h2>
+                🔔 Notifications
+
+                {% if unread_notifications_count > 0 %}
+                    <span class="notification-count">
+                        {{ unread_notifications_count }} New
+                    </span>
+                {% endif %}
+            </h2>
+
+            <p class="section-description">Stay updated about your CampusSwap activity.</p>
+
+            {% for notification in notifications %}
+
+                <div class="notification-card {% if not notification.is_read %}unread-notification{% endif %}">
+
+                    <p>{{ notification.message }}</p>
+
+                    <small>
+                        {{ notification.created_at|date:"d M Y, h:i A" }}
+                    </small>
+
+                    {% if not notification.is_read %}
+
+                        <br>
+
+                        <span class="notification-new">New</span>
+
+                        <form method="POST"
+                              action="{% url 'mark_notification_read' notification.id %}">
+
+                            {% csrf_token %}
+
+                            <button type="submit" class="mark-read-btn">
+                                ✓ Mark as Read
+                            </button>
+
+                        </form>
+
+                    {% else %}
+
+                        <br>
+
+                        <span class="notification-read">✓ Read</span>
+
+                    {% endif %}
+
+                </div>
+
+            {% empty %}
+
+                <p>No notifications yet.</p>
+
+            {% endfor %}
+
+        </section>
+
+        <!-- RECEIVED EXCHANGE REQUESTS -->
+        <section class="exchange-dashboard-section">
+
+            <h2>📩 Received Exchange Requests</h2>
+
+            <p class="section-description">
+                Students interested in exchanging your products.
+            </p>
+
+            <div class="exchange-request-container">
+
+                {% for exchange in received_requests %}
+
+                    <div class="exchange-request-card">
+
+                        <h3>{{ exchange.product.name }}</h3>
+
+                        <p>
+                            <strong>Requested by:</strong>
+                            {{ exchange.requester.username }}
+                        </p>
+
+                        <p>
+                            <strong>Message:</strong>
+                            {{ exchange.message|default:"No message provided." }}
+                        </p>
+
+                        <p>
+                            <strong>Request Date:</strong>
+                            {{ exchange.created_at|date:"d M Y" }}
+                        </p>
+
+                        <p>
+                            <strong>Status:</strong>
+
+                            {% if exchange.status == 'Accepted' %}
+
+                                <span class="exchange-status accepted-status">
+                                    ✓ Accepted
+                                </span>
+
+                            {% elif exchange.status == 'Rejected' %}
+
+                                <span class="exchange-status rejected-status">
+                                    ✕ Rejected
+                                </span>
+
+                            {% else %}
+
+                                <span class="exchange-status pending-status">
+                                    ⏳ Pending
+                                </span>
+
+                            {% endif %}
+                        </p>
+
+                        <a href="{% url 'product_detail' exchange.product.id %}"
+                           class="details-btn">
+                            View Product
+                        </a>
+
+                        <a href="{% url 'start_chat' exchange.product.id %}"
+                           class="details-btn">
+                            💬 Chat with Student
+                        </a>
+
+                        {% if exchange.status == 'Pending' and exchange.product.status == 'Available' %}
+
+                            <div class="exchange-action-buttons">
+
+                                <form method="POST"
+                                      action="{% url 'accept_exchange_request' exchange.id %}">
+
+                                    {% csrf_token %}
+
+                                    <button type="submit" class="accept-btn">
+                                        ✓ Accept
+                                    </button>
+
+                                </form>
+
+                                <form method="POST"
+                                      action="{% url 'reject_exchange_request' exchange.id %}">
+
+                                    {% csrf_token %}
+
+                                    <button type="submit" class="reject-btn">
+                                        ✕ Reject
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                {% empty %}
+
+                    <p>No exchange requests received yet.</p>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+        <!-- SENT EXCHANGE REQUESTS -->
+        <section class="exchange-dashboard-section">
+
+            <h2>📤 My Sent Exchange Requests</h2>
+
+            <p class="section-description">
+                Track the exchange requests you have sent.
+            </p>
+
+            <div class="exchange-request-container">
+
+                {% for exchange in sent_requests %}
+
+                    <div class="exchange-request-card">
+
+                        <h3>{{ exchange.product.name }}</h3>
+
+                        <p>
+                            <strong>Seller:</strong>
+                            {{ exchange.product.seller.username }}
+                        </p>
+
+                        <p>
+                            <strong>Your Message:</strong>
+                            {{ exchange.message|default:"No message provided." }}
+                        </p>
+
+                        <p>
+                            <strong>Request Date:</strong>
+                            {{ exchange.created_at|date:"d M Y" }}
+                        </p>
+
+                        <p>
+                            <strong>Status:</strong>
+
+                            {% if exchange.status == 'Accepted' %}
+
+                                <span class="exchange-status accepted-status">
+                                    ✓ Accepted
+                                </span>
+
+                            {% elif exchange.status == 'Rejected' %}
+
+                                <span class="exchange-status rejected-status">
+                                    ✕ Rejected
+                                </span>
+
+                            {% else %}
+
+                                <span class="exchange-status pending-status">
+                                    ⏳ Pending
+                                </span>
+
+                            {% endif %}
+                        </p>
+
+                        <a href="{% url 'product_detail' exchange.product.id %}"
+                           class="details-btn">
+                            View Product
+                        </a>
+
+                        <a href="{% url 'start_chat' exchange.product.id %}"
+                           class="details-btn">
+                            💬 Chat with Seller
+                        </a>
+
+                    </div>
+
+                {% empty %}
+
+                    <p>You haven't sent any exchange requests yet.</p>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+        <!-- MY PRODUCTS -->
+        <section class="products-section">
+
+            <h2 class="products-heading">📦 My Products</h2>
+
+            <p class="section-description">
+                Manage the products you have uploaded to CampusSwap.
+            </p>
+
+            <div class="product-container">
+
+                {% for product in my_products %}
+
+                    <div class="product-card">
+
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}"
+                                 alt="{{ product.name }}"
+                                 class="product-img">
+                        {% endif %}
+
+                        <h3>{{ product.name }}</h3>
+
+                        <p>{{ product.category }}</p>
+
+                        <h4>₹{{ product.price }}</h4>
+
+                        <!-- PRODUCT STATUS -->
+                        <div class="product-status-box">
+
+                            <p class="status-label">
+
+                                Product Status:
+
+                                <span class="{% if product.status == 'Available' %}available-status{% else %}sold-status{% endif %}">
+                                    {{ product.status }}
+                                </span>
+
+                            </p>
+
+                            <form method="POST"
+                                  action="{% url 'update_product_status' product.id %}"
+                                  class="status-form">
+
+                                {% csrf_token %}
+
+                                <select name="status" class="status-select">
+
+                                    <option value="Available"
+                                        {% if product.status == 'Available' %}selected{% endif %}>
+                                        Available
+                                    </option>
+
+                                    <option value="Sold"
+                                        {% if product.status == 'Sold' %}selected{% endif %}>
+                                        Sold
+                                    </option>
+
+                                </select>
+
+                                <button type="submit" class="status-update-btn">
+                                    Update Status
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                        <p>
+                            Uploaded: {{ product.created_at|date:"d M Y" }}
+                        </p>
+
+                        <!-- PRODUCT ACTIONS -->
+                        <div class="dashboard-product-actions">
+
+                            <a href="{% url 'product_detail' product.id %}"
+                               class="details-btn">
+                                View Details
+                            </a>
+
+                            <a href="{% url 'edit_product' product.id %}"
+                               class="details-btn">
+                                Edit Product
+                            </a>
+
+                            <a href="{% url 'delete_product' product.id %}"
+                               class="delete-btn">
+                                Delete
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                {% empty %}
+
+                    <p>You haven't uploaded any products yet.</p>
+
+                    <a href="{% url 'add_product' %}" class="details-btn">
+                        Upload Your First Product
+                    </a>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+
+        <h3>CampusSwap</h3>
+
+        <p>Connecting Students, Sharing Resources.</p>
+
+        <p>© 2026 CampusSwap. All Rights Reserved.</p>
+
+    </footer>
+
+</body>
+</html>

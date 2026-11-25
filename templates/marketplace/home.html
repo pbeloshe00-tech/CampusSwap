@@ -1,0 +1,1155 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Campus Swap</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=19">
+
+    <style>
+        :root {
+            --bg: #080817;
+            --panel: rgba(22, 22, 48, .78);
+            --purple: #8b5cf6;
+            --cyan: #54e5ff;
+            --muted: #b9b8d2;
+            --line: rgba(164, 142, 255, .22);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            margin: 0;
+            color: #f7f5ff;
+            background:
+                radial-gradient(ellipse at 15% 8%, rgba(105, 64, 220, .22), transparent 36%),
+                radial-gradient(ellipse at 90% 30%, rgba(38, 171, 208, .12), transparent 32%),
+                var(--bg);
+            font-family: Inter, "Segoe UI", Arial, sans-serif;
+        }
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 22px;
+            padding: 17px 5%;
+            background: rgba(9, 9, 27, .82);
+            border-bottom: 1px solid var(--line);
+            backdrop-filter: blur(18px);
+            box-shadow: 0 8px 35px rgba(0,0,0,.2);
+        }
+
+        .navbar h2 {
+            margin: 0 auto 0 0;
+            flex-shrink: 0;
+            color: #fff;
+            font-size: 30px;
+            font-weight: 850;
+            letter-spacing: -.8px;
+        }
+
+        .navbar h2 span {
+            color: var(--cyan);
+            text-shadow: 0 0 18px rgba(84,229,255,.45);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 8px 19px;
+        }
+
+        .nav-links a {
+            color: #dedcf4;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: color .2s, transform .2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--cyan);
+            transform: translateY(-2px);
+        }
+
+        .nav-links a[href*="wishlist"] {
+            color: #ff8fab;
+            font-weight: 800;
+        }
+
+        .nav-links a[href*="wishlist"]:hover {
+            color: #ffb6c8;
+        }
+
+        .hero {
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+            min-height: 390px;
+            padding: 95px 22px 85px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background:
+                radial-gradient(ellipse at 50% 0%, rgba(129, 88, 255, .36), transparent 58%),
+                linear-gradient(135deg, #11102c 0%, #21134b 52%, #0b2039 100%);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .hero::before,
+        .hero::after {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            width: 280px;
+            height: 280px;
+            border: 1px solid rgba(84,229,255,.18);
+            border-radius: 50%;
+            box-shadow: 0 0 70px rgba(139,92,246,.17), inset 0 0 65px rgba(84,229,255,.08);
+        }
+
+        .hero::before { left: -150px; top: 20px; }
+        .hero::after { right: -150px; bottom: -100px; }
+
+        .hero h1 {
+            max-width: 900px;
+            margin: 0 0 18px;
+            color: #fff;
+            font-size: clamp(36px, 5vw, 62px);
+            line-height: 1.08;
+            letter-spacing: -2px;
+            font-weight: 850;
+            text-shadow: 0 0 35px rgba(139,92,246,.35);
+        }
+
+        .hero p {
+            max-width: 620px;
+            margin: 0 0 30px;
+            color: #d1cdea;
+            font-size: 18px;
+            line-height: 1.75;
+        }
+
+        .shop-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 25px;
+            border: 1px solid rgba(255,255,255,.25);
+            border-radius: 12px;
+            color: #09091a;
+            background: linear-gradient(100deg, #9d7bff, #66e8ff);
+            box-shadow: 0 0 28px rgba(120,100,255,.32);
+            font-weight: 800;
+            text-decoration: none;
+            transition: transform .2s, box-shadow .2s;
+        }
+
+        .shop-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 38px rgba(84,229,255,.38);
+        }
+
+        .categories,
+        #products,
+        #about,
+        .trending-section,
+        .recently-viewed-section {
+            padding: 65px 5%;
+        }
+
+        .categories {
+            background: rgba(255,255,255,.015);
+        }
+
+        .categories h2,
+        .products h2,
+        #about h2,
+        .trending-section h2,
+        .recently-viewed-section h2 {
+            margin: 0 0 28px;
+            color: #fff;
+            text-align: center;
+            font-size: clamp(25px, 3vw, 36px);
+            font-weight: 800;
+            letter-spacing: -.7px;
+        }
+
+        .category-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .category {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 135px;
+            padding: 17px 20px;
+            border: 1px solid var(--line);
+            border-radius: 15px;
+            color: #eeebff;
+            background: linear-gradient(145deg, rgba(40,35,79,.86), rgba(17,24,49,.86));
+            box-shadow: 0 10px 28px rgba(0,0,0,.16);
+            text-decoration: none;
+            font-weight: 700;
+            transition: .25s ease;
+        }
+
+        .category:hover {
+            transform: translateY(-5px);
+            border-color: rgba(84,229,255,.55);
+            box-shadow: 0 12px 32px rgba(105,80,255,.2);
+            color: var(--cyan);
+        }
+
+        /* TRENDING SECTION */
+        .trending-section {
+            background:
+                radial-gradient(ellipse at 50% 0%, rgba(139,92,246,.15), transparent 65%),
+                rgba(255,255,255,.012);
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .trending-subtitle,
+        .recently-viewed-subtitle {
+            margin: -12px 0 32px;
+            color: var(--muted);
+            text-align: center;
+            font-size: 15px;
+        }
+
+        .trending-heading {
+            display: inline-block;
+            padding: 5px 12px;
+            margin-right: 7px;
+            border: 1px solid rgba(255,170,70,.25);
+            border-radius: 20px;
+            color: #ffbd72;
+            background: rgba(255,150,50,.09);
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .trending-card {
+            position: relative;
+        }
+
+        .trending-rank {
+            position: absolute;
+            top: 28px;
+            left: 28px;
+            z-index: 3;
+            padding: 7px 12px;
+            border-radius: 20px;
+            color: #171023;
+            background: linear-gradient(110deg, #ffd36b, #ff9d66);
+            font-size: 12px;
+            font-weight: 900;
+            box-shadow: 0 4px 14px rgba(0,0,0,.3);
+        }
+
+        .trending-count {
+            display: inline-block;
+            margin: 4px 0 10px;
+            padding: 7px 11px;
+            border: 1px solid rgba(255,143,171,.25);
+            border-radius: 20px;
+            color: #ff9fba;
+            background: rgba(255,100,150,.08);
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .trending-empty {
+            grid-column: 1 / -1;
+            padding: 35px 20px;
+            border: 1px dashed var(--line);
+            border-radius: 16px;
+            color: #ddd9f5;
+            text-align: center;
+            background: rgba(24,23,54,.6);
+        }
+
+        /* RECENTLY VIEWED SECTION */
+        .recently-viewed-section {
+            background:
+                radial-gradient(ellipse at 50% 0%, rgba(84,229,255,.10), transparent 65%),
+                rgba(255,255,255,.015);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .recently-viewed-heading {
+            display: inline-block;
+            padding: 5px 12px;
+            margin-right: 7px;
+            border: 1px solid rgba(84,229,255,.25);
+            border-radius: 20px;
+            color: var(--cyan);
+            background: rgba(84,229,255,.08);
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .recently-viewed-card {
+            position: relative;
+        }
+
+        .recently-viewed-time {
+            display: inline-block;
+            margin-top: 5px;
+            padding: 6px 10px;
+            border: 1px solid rgba(84,229,255,.2);
+            border-radius: 20px;
+            color: #8cecff;
+            background: rgba(84,229,255,.07);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .recently-viewed-empty {
+            grid-column: 1 / -1;
+            padding: 40px 20px;
+            border: 1px dashed var(--line);
+            border-radius: 16px;
+            color: #ddd9f5;
+            text-align: center;
+            background: rgba(24,23,54,.6);
+        }
+
+        .recently-viewed-empty h3 {
+            color: var(--cyan);
+            font-size: 22px;
+        }
+
+        .recently-viewed-empty p {
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        #products { background: transparent; }
+
+        .search-form {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            max-width: 900px;
+            margin: 0 auto 35px;
+            padding: 14px;
+            border: 1px solid var(--line);
+            border-radius: 17px;
+            background: rgba(23,22,52,.7);
+            box-shadow: 0 15px 45px rgba(0,0,0,.18);
+        }
+
+        .search-form input,
+        .search-form select {
+            flex: 1 1 190px;
+            min-width: 0;
+            padding: 13px 15px;
+            border: 1px solid rgba(174,160,255,.2);
+            border-radius: 10px;
+            outline: none;
+            color: #fff;
+            background: #11112b;
+        }
+
+        .search-form input::placeholder { color: #9290ad; }
+
+        .search-form select option {
+            color: #fff;
+            background: #11112b;
+        }
+
+        .search-form input:focus,
+        .search-form select:focus {
+            border-color: var(--cyan);
+        }
+
+        .search-form button,
+        .search-form a {
+            padding: 13px 20px;
+            border: 0;
+            border-radius: 10px;
+            color: #fff;
+            background: linear-gradient(110deg, #7956e8, #5369dc);
+            text-decoration: none;
+            font-weight: 750;
+            cursor: pointer;
+        }
+
+        .search-form a { background: #343451; }
+
+        .product-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(235px, 1fr));
+            gap: 22px;
+        }
+
+        .product-card {
+            position: relative;
+            overflow: hidden;
+            padding: 17px;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            color: #f3f0ff;
+            background: linear-gradient(155deg, rgba(31,29,66,.94), rgba(15,22,43,.96));
+            box-shadow: 0 14px 38px rgba(0,0,0,.2);
+            transition: transform .25s, border-color .25s, box-shadow .25s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(84,229,255,.42);
+            box-shadow: 0 18px 42px rgba(65,49,150,.25);
+        }
+
+        .product-img {
+            display: block;
+            width: 100%;
+            height: 190px;
+            object-fit: cover;
+            border-radius: 12px;
+            background: #101027;
+        }
+
+        .product-card h3 {
+            margin: 14px 0 8px;
+            color: #fff;
+            font-size: 19px;
+        }
+
+        .product-card p {
+            color: var(--muted);
+            overflow-wrap: anywhere;
+        }
+
+        .product-card h4 {
+            color: var(--cyan);
+            font-size: 20px;
+        }
+
+        .product-status-box { color: #ddd9f5; }
+        .available-status { color: #65efb0; font-weight: 800; }
+        .sold-status { color: #ff9aab; font-weight: 800; }
+
+        .home-product-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .home-product-actions a,
+        .home-product-actions button {
+            flex: 1 1 100px;
+            padding: 11px 10px;
+            border: 1px solid rgba(255,255,255,.13);
+            border-radius: 9px;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .details-btn { background: #6550c8; }
+        .contact-seller-btn { background: #147b8c; }
+        .sold-disabled-btn { background: #45445a; }
+
+        .wishlist-form {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            z-index: 5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .wishlist-btn {
+            width: 46px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+            border-radius: 50%;
+            color: #ff3f75;
+            background: white;
+            font-size: 25px;
+            line-height: 1;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,.3);
+            transition: transform .25s ease, background .25s ease;
+        }
+
+        .wishlist-btn:hover {
+            transform: scale(1.15);
+            background: #ffe5ed;
+        }
+
+        .no-products {
+            grid-column: 1 / -1;
+            padding: 35px 20px;
+            border: 1px dashed var(--line);
+            border-radius: 16px;
+            color: #ddd9f5;
+            text-align: center;
+            background: rgba(24,23,54,.6);
+        }
+
+        #about {
+            text-align: center;
+            background: linear-gradient(135deg, rgba(42,29,86,.65), rgba(12,31,51,.65));
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+        }
+
+        #about p {
+            max-width: 700px;
+            margin: 15px auto;
+            color: #c5c2dd;
+            line-height: 1.8;
+        }
+
+        footer {
+            padding: 30px 20px;
+            color: #bdbbd5;
+            text-align: center;
+            background: #070713;
+        }
+
+        footer h3 { color: #fff; font-size: 22px; }
+
+        @media (max-width: 850px) {
+            .navbar { justify-content: center; }
+            .navbar h2 { margin: 0 auto; }
+            .nav-links { justify-content: center; }
+        }
+
+        @media (max-width: 600px) {
+            .navbar { padding: 14px 4%; }
+            .navbar h2 { font-size: 27px; }
+            .nav-links { gap: 12px; }
+            .nav-links a { font-size: 13px; }
+
+            .hero {
+                min-height: 310px;
+                padding: 70px 20px;
+            }
+
+            .hero h1 {
+                font-size: 34px;
+                letter-spacing: -1px;
+            }
+
+            .hero p { font-size: 15px; }
+
+            .categories,
+            #products,
+            #about,
+            .trending-section,
+            .recently-viewed-section {
+                padding: 45px 5%;
+            }
+
+            .search-form { flex-direction: column; }
+
+            .search-form input,
+            .search-form select,
+            .search-form button,
+            .search-form a {
+                width: 100%;
+            }
+
+            .category { flex: 1 1 115px; }
+
+            .wishlist-form {
+                top: 23px;
+                right: 23px;
+            }
+
+            .wishlist-btn {
+                width: 42px;
+                height: 42px;
+            }
+        }
+
+/* STUDENT DEALS SECTION */
+.student-deals-section {
+    padding: 65px 5%;
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(101,239,176,.12), transparent 65%),
+        rgba(255,255,255,.015);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+}
+
+.student-deals-section h2 {
+    margin: 0 0 28px;
+    color: #fff;
+    text-align: center;
+    font-size: clamp(25px, 3vw, 36px);
+    font-weight: 800;
+}
+
+.student-deals-subtitle {
+    margin: -12px 0 32px;
+    color: var(--muted);
+    text-align: center;
+    font-size: 15px;
+}
+
+.deal-badge {
+    display: inline-block;
+    margin: 5px 0 10px;
+    padding: 7px 12px;
+    border: 1px solid rgba(101,239,176,.3);
+    border-radius: 20px;
+    color: #65efb0;
+    background: rgba(101,239,176,.09);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.student-deals-empty {
+    grid-column: 1 / -1;
+    padding: 35px 20px;
+    border: 1px dashed var(--line);
+    border-radius: 16px;
+    color: #ddd9f5;
+    text-align: center;
+    background: rgba(24,23,54,.6);
+}
+
+.student-deals-empty h3 {
+    color: #65efb0;
+}
+
+    </style>
+</head>
+
+<body>
+
+    {% include 'marketplace/includes/messages.html' %}
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <h2>Campus<span>Swap</span></h2>
+
+        <div class="nav-links">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="#products">Products</a>
+            <a href="#categories">Categories</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+
+            {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}">My Dashboard</a>
+                <a href="{% url 'chat_list' %}">Chats</a>
+                <a href="{% url 'my_wishlist' %}">❤️ Wishlist</a>
+                <a href="{% url 'add_product' %}">Sell Product</a>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'register' %}">Register</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Buy, Sell & Swap Within Your Campus!</h1>
+
+        <p>
+            Your college marketplace to exchange books,
+            notes, gadgets and more.
+        </p>
+
+        <a href="#products" class="shop-btn">
+            Explore Marketplace
+        </a>
+    </section>
+
+    <!-- Categories -->
+    <section class="categories" id="categories">
+        <h2>Explore Categories</h2>
+
+        <div class="category-container">
+            <a href="{% url 'home' %}?category=Books#products" class="category">📚 Books</a>
+            <a href="{% url 'home' %}?category=Electronics#products" class="category">💻 Electronics</a>
+            <a href="{% url 'home' %}?category=Notes#products" class="category">📝 Notes</a>
+            <a href="{% url 'home' %}?category=Accessories#products" class="category">🎒 Accessories</a>
+            <a href="{% url 'home' %}?category=Others#products" class="category">📦 Others</a>
+        </div>
+    </section>
+
+    <!-- TRENDING ON CAMPUS -->
+    <section class="trending-section" id="trending">
+
+        <h2>
+            <span class="trending-heading">🔥 POPULAR</span>
+            Trending on Campus
+        </h2>
+
+        <p class="trending-subtitle">
+            Discover the products students love the most!
+        </p>
+
+        <div class="product-container">
+
+            {% for product in trending_products %}
+
+                <div class="product-card trending-card">
+
+                    <span class="trending-rank">
+                        🔥 #{{ forloop.counter }} Trending
+                    </span>
+
+                    {% if user.is_authenticated and product.seller != user %}
+
+                        <form method="POST"
+                              action="{% url 'toggle_wishlist' product.id %}"
+                              class="wishlist-form">
+
+                            {% csrf_token %}
+
+                            <button type="submit"
+                                    class="wishlist-btn"
+                                    title="Add or remove from Wishlist"
+                                    aria-label="Toggle Wishlist">
+
+                                {% if product.id in wishlist_product_ids %}
+                                    ❤️
+                                {% else %}
+                                    🤍
+                                {% endif %}
+
+                            </button>
+                        </form>
+
+                    {% endif %}
+
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}"
+                             alt="{{ product.name }}"
+                             class="product-img">
+                    {% endif %}
+
+                    <h3>{{ product.name }}</h3>
+
+                    <p>{{ product.category }}</p>
+
+                    <p>{{ product.description|truncatechars:100 }}</p>
+
+                    <h4>₹{{ product.price }}</h4>
+
+                    <p>Seller: {{ product.seller.username }}</p>
+
+                    <span class="trending-count">
+                        ❤️ {{ product.wishlist_count }} students interested
+                    </span>
+
+                    <div class="product-status-box">
+                        <p>
+                            Status:
+                            <span class="available-status">Available</span>
+                        </p>
+                    </div>
+
+                    <div class="home-product-actions">
+                        <a href="{% url 'product_detail' product.id %}"
+                           class="details-btn">
+                            View Details
+                        </a>
+
+                        {% if product.seller.email %}
+                            <a href="mailto:{{ product.seller.email }}"
+                               class="contact-seller-btn">
+                                Contact Seller
+                            </a>
+                        {% endif %}
+                    </div>
+
+                </div>
+
+            {% empty %}
+
+                <div class="trending-empty">
+                    <h3>🔥 Trending products will appear here!</h3>
+                    <p>
+                        Products added to student wishlists will
+                        appear in this section automatically.
+                    </p>
+                </div>
+
+            {% endfor %}
+
+        </div>
+    </section>
+
+<!-- STUDENT DEALS -->
+<section class="student-deals-section" id="student-deals">
+
+    <h2>💚 Student Deals</h2>
+
+    <p class="student-deals-subtitle">
+        Amazing campus finds at pocket-friendly prices!
+        Every deal is ₹500 or less.
+    </p>
+
+    <div class="product-container">
+
+        {% for product in student_deals %}
+
+        <div class="product-card">
+
+            {% if product.image %}
+                <img src="{{ product.image.url }}"
+                     alt="{{ product.name }}"
+                     class="product-img">
+            {% endif %}
+
+            <span class="deal-badge">
+                💚 BUDGET FRIENDLY
+            </span>
+
+            <h3>{{ product.name }}</h3>
+
+            <p>{{ product.category }}</p>
+
+            <p>{{ product.description|truncatechars:90 }}</p>
+
+            <h4>₹{{ product.price }}</h4>
+
+            <p>Seller: {{ product.seller.username }}</p>
+
+            <div class="product-status-box">
+                <p>
+                    Status:
+                    <span class="available-status">Available</span>
+                </p>
+            </div>
+
+            <div class="home-product-actions">
+
+                <a href="{% url 'product_detail' product.id %}"
+                   class="details-btn">
+                    View Details
+                </a>
+
+                {% if product.seller.email %}
+                    <a href="mailto:{{ product.seller.email }}"
+                       class="contact-seller-btn">
+                        Contact Seller
+                    </a>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="student-deals-empty">
+            <h3>💚 New Student Deals Coming Soon!</h3>
+            <p>
+                Affordable products priced at ₹500 or less
+                will appear here automatically.
+            </p>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+    <!-- RECENTLY VIEWED PRODUCTS -->
+    {% if user.is_authenticated %}
+    <section class="recently-viewed-section" id="recently-viewed">
+
+        <h2>
+            <span class="recently-viewed-heading">👀 YOUR HISTORY</span>
+            Recently Viewed Products
+        </h2>
+
+        <p class="recently-viewed-subtitle">
+            Pick up where you left off! Here are the products you viewed recently.
+        </p>
+
+        <div class="product-container">
+
+            {% for item in recently_viewed_products %}
+
+                <div class="product-card recently-viewed-card">
+
+                    {% if item.product.image %}
+                        <img src="{{ item.product.image.url }}"
+                             alt="{{ item.product.name }}"
+                             class="product-img">
+                    {% endif %}
+
+                    <h3>{{ item.product.name }}</h3>
+
+                    <p>{{ item.product.category }}</p>
+
+                    <p>{{ item.product.description|truncatechars:90 }}</p>
+
+                    <h4>₹{{ item.product.price }}</h4>
+
+                    <p>Seller: {{ item.product.seller.username }}</p>
+
+                    <span class="recently-viewed-time">
+                        👀 Recently viewed
+                    </span>
+
+                    <div class="product-status-box">
+                        <p>
+                            Status:
+                            <span class="available-status">
+                                {{ item.product.status }}
+                            </span>
+                        </p>
+                    </div>
+
+                    <div class="home-product-actions">
+
+                        <a href="{% url 'product_detail' item.product.id %}"
+                           class="details-btn">
+                            View Details
+                        </a>
+
+                        {% if item.product.seller.email %}
+                            <a href="mailto:{{ item.product.seller.email }}"
+                               class="contact-seller-btn">
+                                Contact Seller
+                            </a>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            {% empty %}
+
+                <div class="recently-viewed-empty">
+                    <h3>👀 No recently viewed products yet!</h3>
+
+                    <p>
+                        Explore the marketplace and open any product.
+                        Your recently viewed products will appear here.
+                    </p>
+
+                    <a href="#products" class="shop-btn">
+                        Explore Products
+                    </a>
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+    {% endif %}
+
+    <!-- Recently Added Products -->
+    <section id="products" class="products">
+
+        {% if selected_category %}
+            <h2>{{ selected_category }} Products</h2>
+        {% else %}
+            <h2>Recently Added Products</h2>
+        {% endif %}
+
+        <!-- Search Form -->
+        <form method="GET"
+              action="{% url 'home' %}"
+              class="search-form">
+
+            <input
+                type="text"
+                name="q"
+                placeholder="Search books, laptops, notes..."
+                value="{{ query }}"
+            >
+
+            <select name="category">
+                <option value="">All Categories</option>
+
+                {% for value, label in categories %}
+                    <option value="{{ value }}"
+                        {% if selected_category == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Search</button>
+            <a href="{% url 'home' %}">Reset</a>
+        </form>
+
+        <!-- Product Cards -->
+        <div class="product-container">
+
+            {% for product in products %}
+
+                <div class="product-card">
+
+                    {% if user.is_authenticated and product.seller != user %}
+
+                        <form method="POST"
+                              action="{% url 'toggle_wishlist' product.id %}"
+                              class="wishlist-form">
+
+                            {% csrf_token %}
+
+                            <button type="submit"
+                                    class="wishlist-btn"
+                                    title="Add or remove from Wishlist"
+                                    aria-label="Toggle Wishlist">
+
+                                {% if product.id in wishlist_product_ids %}
+                                    ❤️
+                                {% else %}
+                                    🤍
+                                {% endif %}
+
+                            </button>
+                        </form>
+
+                    {% endif %}
+
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}"
+                             alt="{{ product.name }}"
+                             class="product-img">
+                    {% endif %}
+
+                    <h3>{{ product.name }}</h3>
+
+                    <p>{{ product.category }}</p>
+
+                    <p>{{ product.description|truncatechars:100 }}</p>
+
+                    <h4>₹{{ product.price }}</h4>
+
+                    <p>Seller: {{ product.seller.username }}</p>
+
+                    <div class="product-status-box">
+                        <p class="status-label">
+                            Status:
+
+                            {% if product.status == 'Available' %}
+                                <span class="available-status">Available</span>
+                            {% else %}
+                                <span class="sold-status">Sold</span>
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <div class="home-product-actions">
+
+                        <a href="{% url 'product_detail' product.id %}"
+                           class="details-btn">
+                            View Details
+                        </a>
+
+                        {% if product.status == 'Available' %}
+
+                            {% if product.seller.email %}
+                                <a href="mailto:{{ product.seller.email }}"
+                                   class="contact-seller-btn">
+                                    Contact Seller
+                                </a>
+                            {% else %}
+                                <p>Seller contact details unavailable.</p>
+                            {% endif %}
+
+                        {% else %}
+
+                            <button type="button"
+                                    class="sold-disabled-btn"
+                                    disabled>
+                                Product Sold
+                            </button>
+
+                        {% endif %}
+
+                    </div>
+                </div>
+
+            {% empty %}
+
+                <div class="no-products">
+
+                    {% if selected_category %}
+                        <h3>No {{ selected_category }} added yet!</h3>
+                        <p>Be the first student to add a product in this category.</p>
+
+                    {% elif query %}
+                        <h3>No products found!</h3>
+                        <p>Try searching with another product name.</p>
+
+                    {% else %}
+                        <h3>No products available yet!</h3>
+                        <p>Be the first to upload a product!</p>
+                    {% endif %}
+
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'add_product' %}" class="shop-btn">
+                            Add Product
+                        </a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="shop-btn">
+                            Login to Add Product
+                        </a>
+                    {% endif %}
+
+                    <a href="{% url 'home' %}" class="back-btn">
+                        View All Products
+                    </a>
+                </div>
+
+            {% endfor %}
+
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about">
+        <h2>About Campus Swap</h2>
+
+        <p>
+            Campus Swap helps students buy, sell and exchange
+            useful products within their college. It provides
+            a convenient platform to reuse resources, save money
+            and connect with other students.
+        </p>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <h3>Campus Swap</h3>
+        <p>Connecting Students, Sharing Resources.</p>
+        <p>© 2026 Campus Swap. All Rights Reserved.</p>
+    </footer>
+
+</body>
+</html>

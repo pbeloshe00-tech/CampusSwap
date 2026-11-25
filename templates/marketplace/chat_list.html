@@ -1,0 +1,439 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Chats - CampusSwap</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=17">
+
+    <style>
+        body.chats-page {
+            background: linear-gradient(135deg, #f7f6ff, #eeecff);
+            color: #25234b;
+            min-height: 100vh;
+        }
+
+        /* NAVBAR */
+        .chats-page .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 18px 5%;
+            background: linear-gradient(110deg, #24245c, #5148a8);
+            color: white;
+            box-shadow: 0 6px 25px rgba(36,36,92,0.2);
+        }
+
+        .chats-page .navbar h2 {
+            color: white;
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
+        .chats-page .navbar h2 span {
+            color: #c9c2ff;
+        }
+
+        .chats-page .nav-links {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .chats-page .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .chats-page .nav-links a:hover {
+            color: #c9c2ff;
+        }
+
+        .chats-page .nav-links a.wishlist-link {
+            color: #ffb9dc;
+        }
+
+        .chats-page .nav-links a.wishlist-link:hover {
+            color: white;
+        }
+
+        /* MAIN CONTAINER */
+        .chats-page .chat-container {
+            max-width: 1000px;
+            width: 92%;
+            margin: 45px auto;
+        }
+
+        .chats-page .chat-hero {
+            padding: 38px;
+            border-radius: 22px;
+            background: linear-gradient(120deg, #24245c, #5148a8, #7865e8);
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 12px 35px rgba(81,72,168,0.2);
+        }
+
+        .chats-page .chat-hero h1 {
+            color: white;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .chats-page .chat-hero p {
+            color: #e5e1ff;
+        }
+
+        .chats-page .total-unread {
+            display: inline-flex;
+            background: white;
+            color: #5148a8;
+            border-radius: 20px;
+            padding: 5px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            vertical-align: middle;
+            margin-left: 8px;
+        }
+
+        /* CONVERSATION CARDS */
+        .chats-page .conversation-card {
+            background: white;
+            padding: 23px;
+            margin-bottom: 17px;
+            border-radius: 16px;
+            border: 1px solid #e9e5ff;
+            box-shadow: 0 7px 22px rgba(55,45,120,0.07);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            transition: 0.3s;
+        }
+
+        .chats-page .conversation-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(81,72,168,0.14);
+            border-color: #c9c2ff;
+        }
+
+        .chats-page .chat-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .chats-page .chat-user {
+            color: #302b70;
+            font-size: 19px;
+            margin-bottom: 8px;
+        }
+
+        .chats-page .product-name {
+            color: #7865e8;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 9px;
+        }
+
+        .chats-page .last-message {
+            color: #85819b;
+            font-size: 14px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 550px;
+        }
+
+        .chats-page .last-message.unread {
+            color: #393477;
+            font-weight: 700;
+        }
+
+        .chats-page .chat-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 11px;
+        }
+
+        .chats-page .message-time {
+            color: #9994ae;
+            font-size: 12px;
+        }
+
+        .chats-page .unread-badge {
+            background: #7865e8;
+            color: white;
+            min-width: 25px;
+            height: 25px;
+            padding: 0 8px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        /* OPEN CHAT BUTTON */
+        .chats-page .open-chat-btn {
+            display: inline-block;
+            background: #5148a8;
+            color: white;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 9px;
+            white-space: nowrap;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .chats-page .open-chat-btn:hover {
+            background: #7865e8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(81,72,168,0.2);
+        }
+
+        /* EMPTY CHAT */
+        .chats-page .empty-chat {
+            text-align: center;
+            padding: 55px 20px;
+            background: white;
+            border: 1px solid #e9e5ff;
+            border-radius: 18px;
+            box-shadow: 0 7px 22px rgba(55,45,120,0.07);
+        }
+
+        .chats-page .empty-chat h3 {
+            color: #302b70;
+            font-size: 22px;
+        }
+
+        .chats-page .empty-chat p {
+            color: #85819b;
+            margin: 12px 0 22px;
+        }
+
+        /* FOOTER */
+        .chats-page footer {
+            background: #24245c;
+            color: white;
+            text-align: center;
+            padding: 28px 15px;
+            margin-top: 60px;
+        }
+
+        .chats-page footer h3 {
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .chats-page footer p {
+            color: #d8d4ff;
+            margin: 6px 0;
+        }
+
+        /* RESPONSIVE */
+        @media(max-width: 700px) {
+            .chats-page .navbar {
+                justify-content: center;
+                flex-direction: column;
+            }
+
+            .chats-page .nav-links {
+                justify-content: center;
+                gap: 14px;
+            }
+
+            .chats-page .chat-container {
+                margin: 25px auto;
+            }
+
+            .chats-page .chat-hero {
+                padding: 28px 22px;
+            }
+
+            .chats-page .chat-hero h1 {
+                font-size: 25px;
+            }
+
+            .chats-page .conversation-card {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 18px;
+            }
+
+            .chats-page .chat-meta {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+                flex-wrap: wrap;
+            }
+
+            .chats-page .last-message {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body class="chats-page">
+
+    <!-- NAVIGATION -->
+    <nav class="navbar">
+
+        <h2>Campus<span>Swap</span></h2>
+
+        <div class="nav-links">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'chat_list' %}">💬 My Chats</a>
+            <a href="{% url 'my_wishlist' %}" class="wishlist-link">❤️ Wishlist</a>
+        </div>
+
+    </nav>
+
+    <!-- CHAT CONTAINER -->
+    <main class="chat-container">
+
+        <section class="chat-hero">
+
+            <h1>
+                💬 My Conversations
+
+                {% if total_unread %}
+                    <span class="total-unread">
+                        {{ total_unread }} unread
+                    </span>
+                {% endif %}
+
+            </h1>
+
+            <p>Stay connected and communicate with other students.</p>
+
+        </section>
+
+        {% for conversation in conversations %}
+
+            <div class="conversation-card">
+
+                <div class="chat-info">
+
+                    {% if conversation.participant_one == request.user %}
+
+                        <h3 class="chat-user">
+                            👤 {{ conversation.participant_two.username }}
+                        </h3>
+
+                    {% else %}
+
+                        <h3 class="chat-user">
+                            👤 {{ conversation.participant_one.username }}
+                        </h3>
+
+                    {% endif %}
+
+                    <p class="product-name">
+                        📦 {{ conversation.product.name }}
+                    </p>
+
+                    {% if conversation.last_message %}
+
+                        <p class="last-message {% if conversation.unread_count %}unread{% endif %}">
+
+                            {% if conversation.last_message.sender == request.user %}
+                                You:
+                            {% endif %}
+
+                            {{ conversation.last_message.content }}
+
+                        </p>
+
+                    {% else %}
+
+                        <p class="last-message">
+                            No messages yet. Start the conversation!
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+                <div class="chat-meta">
+
+                    {% if conversation.last_message %}
+
+                        <span class="message-time">
+                            {{ conversation.last_message.created_at|date:"d M, h:i A" }}
+                        </span>
+
+                    {% else %}
+
+                        <span class="message-time">
+                            {{ conversation.created_at|date:"d M Y" }}
+                        </span>
+
+                    {% endif %}
+
+                    {% if conversation.unread_count %}
+
+                        <span class="unread-badge">
+                            {{ conversation.unread_count }}
+                        </span>
+
+                    {% endif %}
+
+                    <a href="{% url 'chat_room' conversation.id %}"
+                       class="open-chat-btn">
+                        Open Chat →
+                    </a>
+
+                </div>
+
+            </div>
+
+        {% empty %}
+
+            <div class="empty-chat">
+
+                <h3>💬 No conversations yet</h3>
+
+                <p>
+                    Start chatting with another student from a product page.
+                </p>
+
+                <a href="{% url 'home' %}" class="open-chat-btn">
+                    Browse Products
+                </a>
+
+            </div>
+
+        {% endfor %}
+
+    </main>
+
+    <footer>
+
+        <h3>CampusSwap</h3>
+
+        <p>Connecting Students, Sharing Resources.</p>
+
+        <p>© 2026 CampusSwap. All Rights Reserved.</p>
+
+    </footer>
+
+</body>
+</html>

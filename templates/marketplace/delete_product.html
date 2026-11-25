@@ -1,0 +1,28 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delete Product - Campus Swap</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    {% include 'marketplace/includes/messages.html' %}
+
+<div class="auth-container">
+    <h1>Delete Product</h1>
+
+    <p>Are you sure you want to delete
+       <strong>{{ product.name }}</strong>?
+    </p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit">Yes, Delete Product</button>
+    </form>
+
+    <a href="{% url 'dashboard' %}">Cancel</a>
+</div>
+
+</body>
+</html>

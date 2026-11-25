@@ -1,0 +1,442 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ product.name }} - Campus Swap</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=8">
+
+    <style>
+        /* Seller Reviews */
+        .seller-reviews-section {
+            margin-top: 30px;
+            padding: 25px;
+            background: rgba(22, 22, 45, 0.85);
+            border: 1px solid rgba(160, 120, 255, 0.25);
+            border-radius: 15px;
+        }
+
+        .seller-reviews-section h2 {
+            margin-bottom: 15px;
+        }
+
+        .seller-rating-summary {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(130, 90, 255, 0.10);
+            border-radius: 10px;
+        }
+
+        .seller-rating-number {
+            font-size: 25px;
+            font-weight: bold;
+            color: #c6a5ff;
+        }
+
+        .review-card {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(160, 120, 255, 0.18);
+            border-radius: 10px;
+        }
+
+        .review-card p {
+            margin: 8px 0;
+        }
+
+        .review-rating {
+            color: #ffd166;
+            font-weight: bold;
+        }
+
+        .review-date {
+            font-size: 13px;
+            opacity: 0.7;
+        }
+
+        .rate-seller-btn {
+            display: inline-block;
+            margin: 15px 0;
+            padding: 11px 20px;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .rate-seller-btn:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+
+    {% include 'marketplace/includes/messages.html' %}
+
+    <!-- Navigation -->
+    <nav class="navbar">
+
+        <h2>Campus<span>Swap</span></h2>
+
+        <div class="nav-links">
+
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'add_product' %}">Sell Product</a>
+            <a href="{% url 'dashboard' %}">My Dashboard</a>
+
+            {% if user.is_authenticated %}
+                <a href="{% url 'chat_list' %}">My Chats</a>
+            {% endif %}
+
+        </div>
+
+    </nav>
+
+
+    <!-- Product Details -->
+    <div class="detail-container">
+
+        <!-- Product Image -->
+        <div class="detail-image">
+
+            <img src="{{ product.image.url }}"
+                 alt="{{ product.name }}">
+
+        </div>
+
+
+        <!-- Product Information -->
+        <div class="detail-info">
+
+            <span class="detail-category">
+                {{ product.category }}
+            </span>
+
+            <h1>{{ product.name }}</h1>
+
+            <h2 class="detail-price">
+                ₹{{ product.price }}
+            </h2>
+
+
+            <!-- Product Status -->
+            <div class="detail-status">
+
+                {% if product.status == 'Available' %}
+
+                    <span class="available-status">
+                        ● Available
+                    </span>
+
+                {% else %}
+
+                    <span class="sold-status">
+                        ● Sold
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+
+            <hr>
+
+            <h3>Product Description</h3>
+
+            <p>{{ product.description }}</p>
+
+            <hr>
+
+
+            <!-- Seller Information -->
+            <h3>Seller Information</h3>
+
+            <div class="seller-info">
+
+                <p>
+                    <strong>Seller:</strong>
+                    {{ product.seller.username }}
+                </p>
+
+                <p>
+                    <strong>Email:</strong>
+
+                    {% if product.seller.email %}
+                        {{ product.seller.email }}
+                    {% else %}
+                        Not provided
+                    {% endif %}
+
+                </p>
+
+            </div>
+
+
+            <p>
+                <strong>Uploaded on:</strong>
+                {{ product.created_at|date:"d M Y" }}
+            </p>
+
+
+            <!-- Contact Seller -->
+            <div class="detail-actions">
+
+                {% if product.status == 'Available' %}
+
+                    {% if product.seller.email %}
+
+                        <a href="mailto:{{ product.seller.email }}"
+                           class="contact-btn">
+                            Contact Seller
+                        </a>
+
+                    {% endif %}
+
+                {% else %}
+
+                    <button class="sold-disabled-btn" disabled>
+                        Product Sold
+                    </button>
+
+                {% endif %}
+
+
+                <!-- CHAT WITH SELLER -->
+                {% if user.is_authenticated %}
+
+                    {% if product.seller != user %}
+
+                        <a href="{% url 'start_chat' product.id %}"
+                           class="contact-btn">
+                            💬 Chat with Seller
+                        </a>
+
+                    {% endif %}
+
+                {% else %}
+
+                    <a href="{% url 'login' %}"
+                       class="contact-btn">
+                        Login to Chat
+                    </a>
+
+                {% endif %}
+
+
+                <a href="{% url 'home' %}"
+                   class="back-btn">
+                    Back to Marketplace
+                </a>
+
+            </div>
+
+
+            <!-- EXCHANGE REQUEST SECTION -->
+            <div class="exchange-section">
+
+                <hr>
+
+                <h2>Request an Exchange</h2>
+
+                <p>
+                    Interested in exchanging this product?
+                    Send the seller an exchange request.
+                </p>
+
+
+                {% if not user.is_authenticated %}
+
+                    <p>
+                        Please log in to send an exchange request.
+                    </p>
+
+                    <a href="{% url 'login' %}" class="exchange-btn">
+                        Login to Request Exchange
+                    </a>
+
+
+                {% elif product.seller == user %}
+
+                    <p>
+                        This is your product. You cannot request
+                        an exchange for your own listing.
+                    </p>
+
+
+                {% elif product.status != 'Available' %}
+
+                    <p>
+                        This product is sold and is no longer
+                        available for exchange.
+                    </p>
+
+
+                {% elif existing_exchange_request %}
+
+                    <div class="exchange-status-box">
+
+                        <h3>Your Exchange Request</h3>
+
+                        <p>
+                            You have already sent a request
+                            for this product.
+                        </p>
+
+                        <p>
+                            <strong>Status:</strong>
+
+                            <span class="exchange-status">
+                                {{ existing_exchange_request.status }}
+                            </span>
+                        </p>
+
+                        <p>
+                            <strong>Your Message:</strong>
+                            {{ existing_exchange_request.message|default:"No message provided." }}
+                        </p>
+
+                    </div>
+
+
+                {% else %}
+
+                    <form method="POST"
+                          action="{% url 'send_exchange_request' product.id %}"
+                          class="exchange-form">
+
+                        {% csrf_token %}
+
+                        {{ exchange_form.as_p }}
+
+                        <button type="submit" class="exchange-btn">
+                            Send Exchange Request
+                        </button>
+
+                    </form>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- SELLER RATINGS AND REVIEWS -->
+            <div class="seller-reviews-section">
+
+                <hr>
+
+                <h2>⭐ Seller Ratings & Reviews</h2>
+
+                <p>
+                    See what other students think about
+                    {{ product.seller.username }}.
+                </p>
+
+
+                <!-- Average Rating -->
+                <div class="seller-rating-summary">
+
+                    {% if seller_review_count %}
+
+                        <div class="seller-rating-number">
+                            {{ seller_average_rating|floatformat:1 }} / 5 ⭐
+                        </div>
+
+                        <p>
+                            Based on {{ seller_review_count }}
+                            review{{ seller_review_count|pluralize }}
+                        </p>
+
+                    {% else %}
+
+                        <p>No ratings yet. Be the first to review this seller!</p>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Review Button -->
+                {% if user.is_authenticated and existing_exchange_request and existing_exchange_request.status == 'Accepted' %}
+
+                    {% if not has_reviewed %}
+
+                        <a href="{% url 'submit_seller_review' existing_exchange_request.id %}"
+                           class="rate-seller-btn">
+                            ⭐ Rate This Seller
+                        </a>
+
+                    {% else %}
+
+                        <p>You have already submitted a review for this exchange.</p>
+
+                    {% endif %}
+
+                {% endif %}
+
+
+                <!-- All Reviews -->
+                <h3>Student Reviews</h3>
+
+                {% for review in seller_reviews %}
+
+                    <div class="review-card">
+
+                        <p>
+                            <strong>{{ review.reviewer.username }}</strong>
+                        </p>
+
+                        <p class="review-rating">
+                            {{ review.rating }} / 5 ⭐
+                        </p>
+
+                        {% if review.comment %}
+
+                            <p>{{ review.comment }}</p>
+
+                        {% else %}
+
+                            <p>No written comment.</p>
+
+                        {% endif %}
+
+                        <p class="review-date">
+                            {{ review.created_at|date:"d M Y" }}
+                        </p>
+
+                    </div>
+
+                {% empty %}
+
+                    <p>No student reviews available yet.</p>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Footer -->
+    <footer>
+
+        <h3>Campus Swap</h3>
+
+        <p>Connecting Students, Sharing Resources.</p>
+
+        <p>© 2026 Campus Swap. All Rights Reserved.</p>
+
+    </footer>
+
+</body>
+</html>
